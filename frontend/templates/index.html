@@ -4,39 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Drug Interaction Checker</title>
-    <!-- Bootstrap CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
-    <style>
-      body {
-        background-color: #f7f7f7; /* Grayish white background */
-        color: #333;
-      }
-      .card {
-        margin-top: 50px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
-      .btn-primary {
-        background-color: #4caf50;
-        border-color: #4caf50;
-      }
-      .btn-primary:hover {
-        background-color: #45a049;
-        border-color: #45a049;
-      }
-    </style>
   </head>
   <body>
-    <div class="container">
+    <div class="container mt-5">
       <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-8">
           <div class="card">
             <div class="card-body">
-              <h1 class="card-title text-center">Drug Interaction Checker</h1>
-              <form method="post" action="{% url 'check_interaction' %}">
+              <h2 class="text-center">Drug Interaction Checker</h2>
+              <form method="post" action="">
                 {% csrf_token %}
                 <div class="mb-3">
                   <label for="drug1" class="form-label">Drug 1:</label>
@@ -66,9 +46,26 @@
               </form>
 
               {% if interaction %}
-              <div class="alert alert-success mt-4" role="alert">
+              <div class="mt-4">
                 <h5>Interaction Results:</h5>
-                <p>{{ interaction }}</p>
+                <p><strong>Interaction:</strong> {{ interaction }}</p>
+                <p><strong>Type:</strong> {{ interaction_type }}</p>
+              </div>
+              {% endif %} {% if drug_details %}
+              <div class="mt-4">
+                <h5>Drug Details:</h5>
+                <ul>
+                  {% for drug in drug_details %}
+                  <li>
+                    <strong>Generic Name:</strong> {{ drug.generic_name }}<br />
+                    <strong>Active Ingredients:</strong> {{
+                    drug.active_ingredients }}<br />
+                    <strong>Dosage Form:</strong> {{ drug.dosage_form }}<br />
+                    <strong>Product Type:</strong> {{ drug.product_type }}<br />
+                    <strong>Route:</strong> {{ drug.route }}
+                  </li>
+                  {% endfor %}
+                </ul>
               </div>
               {% endif %}
             </div>
@@ -76,7 +73,6 @@
         </div>
       </div>
     </div>
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
