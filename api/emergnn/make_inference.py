@@ -1,7 +1,7 @@
 import argparse
-from load_data import DataLoader
+from api.emergnn.load_data import DataLoader
 import torch
-from base_model import BaseModel
+from api.emergnn.base_model import BaseModel
 import json
 
 def make_inference(drug1, drug2):
@@ -45,10 +45,19 @@ def make_inference(drug1, drug2):
     pred = model.test_single(triplet_to_test, KG)
     print('Prediction on '+str(triplet_to_test[0]) + ' and '+str(triplet_to_test[1]))
 
-    return id2relations(pred)
+    interaction = ''
+    interaction_type=''
+    if pred:
+        interaction = 'Yes'
+        interaction_type = str(id2relations(pred))
+    else:
+        interaction='No'
+        interaction_type = 'No interaction'
+
+    return {'interaction': interaction, 'interaction_type': interaction_type}
 
 def drug2id(drug1, drug2):
-    with open('data/id2drug.json') as f:
+    with open('id2drug.json') as f:
         id2drug = json.load(f)
     drugs = [drug1, drug2]
     ids = []
@@ -75,5 +84,4 @@ def id2relations(id):
             relations.append(id2rel[str(i)])
     return relations
  
-print(make_inference('DB00472', 'DB00780'))
 

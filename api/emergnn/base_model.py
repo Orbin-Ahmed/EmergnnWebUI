@@ -3,11 +3,11 @@ import numpy as np
 
 import torch.nn as nn
 
-from utils import batch_by_size
+from api.emergnn.utils import batch_by_size
 from tqdm import tqdm
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.optim import Adam
-from models import EmerGNN
+from api.emergnn.models import EmerGNN
 from sklearn.metrics import roc_auc_score, average_precision_score
 
 
