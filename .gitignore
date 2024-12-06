@@ -10,6 +10,8 @@ frontend/migrations
 *.pyo
 *.sqlite3
 
+**/.DS_Store
+
 .env
 *.local
 
