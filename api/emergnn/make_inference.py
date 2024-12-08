@@ -57,7 +57,8 @@ def make_inference(drug1, drug2):
     return {'interaction': interaction, 'interaction_type': interaction_type}
 
 def drug2id(drug1, drug2):
-    with open('id2drug.json') as f:
+    print(drug1, drug2)
+    with open('C:/Stony Brook/530/backend/EmergnnWebUI/api/emergnn/id2drug.json') as f:
         id2drug = json.load(f)
     drugs = [drug1, drug2]
     ids = []
@@ -75,7 +76,7 @@ def drug2id(drug1, drug2):
     return int(ids[0]), int(ids[1])
 
 def id2relations(id):
-    with open('id2relation.json') as f:
+    with open('C:/Stony Brook/530/backend/EmergnnWebUI/api/emergnn/id2relation.json') as f:
         id2rel = json.load(f)
 
     relations = []
