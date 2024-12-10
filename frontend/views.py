@@ -6,6 +6,7 @@ def index(request):
     interaction = None
     interaction_type = None
     drug_details = []
+    drug_info_details = {}
     drug1_name = None
     drug2_name = None
     generic_names = []
@@ -14,6 +15,7 @@ def index(request):
         drug1_name = request.POST.get('drug1')
         drug2_name = request.POST.get('drug2')
         interaction_api_url = 'http://127.0.0.1:8000/api/drug-interaction/'
+        drug_info_url = 'http://127.0.0.1:8000/api/drug-info/'
 
         public_api_url = 'https://drug-info-and-price-history.p.rapidapi.com/1/druginfo'
         headers = {
@@ -48,6 +50,14 @@ def index(request):
                         'route': route
                     })
 
+        drug_info_response = requests.get(
+            drug_info_url, 
+            params={'drug1': drug1_name, 'drug2': drug2_name}
+        )
+        
+        if drug_info_response.status_code == 200:
+            drug_info_details = drug_info_response.json()
+        
         if len(generic_names) == 2:
             interaction_response = requests.get(
                 interaction_api_url, 
@@ -62,6 +72,7 @@ def index(request):
         'interaction': interaction,
         'interaction_type': interaction_type,
         'drug_details': drug_details,
+        'drug_info_details': drug_info_details,
         'drug1_name': drug1_name,
         'drug2_name': drug2_name
     })

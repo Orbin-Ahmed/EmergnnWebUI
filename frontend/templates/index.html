@@ -23,6 +23,7 @@
     </style>
   </head>
   <body>
+    <!-- prettier-ignore -->
     <div class="container mt-5">
       <div class="row justify-content-center">
         <div class="col-md-10">
@@ -39,6 +40,7 @@
                     name="drug1"
                     class="form-control"
                     placeholder="Enter first drug"
+                    value="{{ drug1_name }}"
                     required
                   />
                 </div>
@@ -50,6 +52,7 @@
                     name="drug2"
                     class="form-control"
                     placeholder="Enter second drug"
+                    value="{{ drug2_name }}"
                     required
                   />
                 </div>
@@ -62,7 +65,14 @@
               <div class="mt-4">
                 <h5>Interaction Results:</h5>
                 <p><strong>Interaction:</strong> {{ interaction }}</p>
-                <p><strong>Type:</strong> {{ interaction_type }}</p>
+                {% if interaction_type %}
+                <p><strong>Interaction Type(s):</strong></p>
+                <ul>
+                  {% for type in interaction_type %}
+                  <li>{{ type }}</li>
+                  {% endfor %}
+                </ul>
+                {% endif %}
               </div>
               {% endif %} {% if drug_details %}
               <div class="row mt-4">
@@ -85,6 +95,47 @@
                   </div>
                 </div>
                 {% endfor %}
+              </div>
+              {% endif %} {% if drug_info_details %}
+              <div class="row mt-4">
+                <div class="col-md-6">
+                  <div class="drug-details">
+                    <div class="drug-header">Drug 1: {{ drug_info_details.drug1.name }}</div>
+                    <p><strong>Description:</strong> {{ drug_info_details.drug1.info.description }}</p>
+                    <h6>Side Effects:</h6>
+                    <ul>
+                      {% for effect in drug_info_details.drug1.info.side_effects %}
+                      <li>
+                        <strong>{{ effect.title }}</strong>:
+                        {% if effect.details %}
+                        {{ effect.details|join:", " }}
+                        {% else %}
+                        No details available
+                        {% endif %}
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="drug-details">
+                    <div class="drug-header">Drug 2: {{ drug_info_details.drug2.name }}</div>
+                    <p><strong>Description:</strong> {{ drug_info_details.drug2.info.description }}</p>
+                    <h6>Side Effects:</h6>
+                    <ul>
+                      {% for effect in drug_info_details.drug2.info.side_effects %}
+                      <li>
+                        <strong>{{ effect.title }}</strong>:
+                        {% if effect.details %}
+                        {{ effect.details|join:", " }}
+                        {% else %}
+                        No details available
+                        {% endif %}
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
               </div>
               {% endif %}
             </div>
