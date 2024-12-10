@@ -4,6 +4,7 @@ import numpy as np
 from torchdrug.layers import functional
 import pickle
 from torch_scatter import scatter_add
+import os
 
 
 class EmerGNN(nn.Module):
@@ -15,7 +16,7 @@ class EmerGNN(nn.Module):
         self.all_rel = args.all_rel
         self.L = args.length
         all_rel = 2*args.all_rel - args.eval_rel + 1
-        with open('data/id2drug_feat.pkl', 'rb') as f:
+        with open(os.path.abspath('api/emergnn/data/id2drug_feat.pkl'), 'rb') as f:
             x = pickle.load(f, encoding='utf-8')
             mfeat = [] 
             for k in x:
