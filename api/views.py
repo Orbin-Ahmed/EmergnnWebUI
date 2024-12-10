@@ -9,8 +9,8 @@ def drug_interaction(request):
 
     inference = make_inference(drug1, drug2)
 
-    interaction= inference.get(interaction)
-    interaction_type = inference.get(interaction_type)
+    interaction = inference.get('interaction')
+    interaction_type = inference.get('interaction_type')
     response_data = {
         'interaction': interaction,
         'interaction_type': interaction_type

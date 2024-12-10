@@ -2,6 +2,7 @@ import torch
 import numpy as np
 
 import torch.nn as nn
+import os
 
 from api.emergnn.utils import batch_by_size
 from tqdm import tqdm
@@ -15,7 +16,7 @@ class BaseModel(object):
     def __init__(self, eval_ent, eval_rel, args, entity_vocab=None, relation_vocab=None):
         self.model = EmerGNN(eval_ent, eval_rel, args)
         if args.load_model:
-            state_dict = torch.load(args.dataset + '_saved_model.pt', map_location=torch.device('cpu'))
+            state_dict = torch.load(os.path.abspath('api/emergnn/S0_saved_model.pt'), map_location=torch.device('cpu'))
             self.model.load_state_dict(state_dict)
         self.model.to('cpu')
 
