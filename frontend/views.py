@@ -8,6 +8,7 @@ def index(request):
     drug_details = []
     drug1_name = None
     drug2_name = None
+    generic_names = []
 
     if request.method == 'POST':
         drug1_name = request.POST.get('drug1')
@@ -17,14 +18,8 @@ def index(request):
         public_api_url = 'https://drug-info-and-price-history.p.rapidapi.com/1/druginfo'
         headers = {
             'X-RapidAPI-Host': 'drug-info-and-price-history.p.rapidapi.com',
-            'X-RapidAPI-Key':  config('RAPIDAPI_KEY')
+            'X-RapidAPI-Key': config('RAPIDAPI_KEY')
         }
-
-        interaction_response = requests.get(interaction_api_url, params={'drug1': drug1_name, 'drug2': drug2_name})
-        if interaction_response.status_code == 200:
-            interaction_data = interaction_response.json()
-            interaction = interaction_data.get('interaction')
-            interaction_type = interaction_data.get('interaction_type')
 
         for drug in [drug1_name, drug2_name]:
             public_api_response = requests.get(public_api_url, headers=headers, params={'drug': drug})
@@ -33,6 +28,9 @@ def index(request):
                 if drug_data_list:
                     drug_data = drug_data_list[0]
                     generic_name = drug_data.get('generic_name', 'N/A')
+                    first_word_generic_name = generic_name.split()[0] if generic_name != 'N/A' else 'N/A'
+                    generic_names.append(first_word_generic_name)
+                    
                     active_ingredients = ", ".join(
                         f"{ingredient['name']} ({ingredient['strength']})"
                         for ingredient in drug_data.get('active_ingredients', [])
@@ -49,6 +47,16 @@ def index(request):
                         'product_type': product_type,
                         'route': route
                     })
+
+        if len(generic_names) == 2:
+            interaction_response = requests.get(
+                interaction_api_url, 
+                params={'drug1': generic_names[0], 'drug2': generic_names[1]}
+            )
+            if interaction_response.status_code == 200:
+                interaction_data = interaction_response.json()
+                interaction = interaction_data.get('interaction')
+                interaction_type = interaction_data.get('interaction_type')
 
     return render(request, 'index.html', {
         'interaction': interaction,
