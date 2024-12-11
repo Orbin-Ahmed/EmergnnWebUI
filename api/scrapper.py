@@ -11,7 +11,7 @@ def scrape_drug_information(drug_name):
         search_results = soup.find(class_="ddc-search-result-link-wrap")
 
         if search_results:
-            description = search_results.find('p').get_text(strip=True) if search_results.find('p') else None
+            description = search_results.find('p').get_text(strip=False) if search_results.find('p') else None
             results['description'] = description
 
     side_effects_url = f"https://www.drugs.com/sfx/{drug_name.lower()}-side-effects.html"
@@ -25,12 +25,12 @@ def scrape_drug_information(drug_name):
 
         for section in accordion_sections:
             summary = section.find('summary')
-            title = summary.find('span', class_="ddc-text-weight-medium").get_text(strip=True) if summary and summary.find('span', class_="ddc-text-weight-medium") else ""
+            title = summary.find('span', class_="ddc-text-weight-medium").get_text(strip=False) if summary and summary.find('span', class_="ddc-text-weight-medium") else ""
 
             content_div = section.find('div', class_="ddc-accordion-content")
             if content_div:
                 list_items = content_div.find_all('li')
-                items = [li.get_text(strip=True) for li in list_items]
+                items = [li.get_text(strip=False) for li in list_items]
                 side_effects_list.append({
                     "title": title,
                     "details": items
@@ -39,7 +39,3 @@ def scrape_drug_information(drug_name):
         results['side_effects'] = side_effects_list
 
     return results
-
-# drug_name = "Tylenol"
-# result = scrape_drug_information(drug_name)
-# print(result)

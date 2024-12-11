@@ -9,139 +9,153 @@
       rel="stylesheet"
     />
     <style>
-      .drug-details {
-        border: 1px solid #ddd;
-        padding: 15px;
-        border-radius: 8px;
-        background-color: #f9f9f9;
+      body {
+        background-color: #f4f6f9;
+        font-family: "Arial", sans-serif;
+        text-align: justify;
       }
-      .drug-header {
-        text-align: center;
+      .container {
+        max-width: 90%;
+      }
+      .card {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: none;
+        border-radius: 12px;
+      }
+      .card-header {
+        background-color: #3498db !important;
+        color: white !important;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        padding: 15px;
+        font-weight: 700;
+        font-size: 22px;
+      }
+      .btn-primary {
+        background-color: #3498db;
+        border: none;
+        transition: all 0.3s ease;
+      }
+      .btn-primary:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+      }
+      h2 {
+        color: #2c3e50;
+        margin-bottom: 30px;
         font-weight: bold;
-        margin-bottom: 10px;
+      }
+      .form-control {
+        border-radius: 6px;
+        border-color: #bdc3c7;
+      }
+      .side-effects-section {
+        border-radius: 8px;
+        margin-top: 15px;
+      }
+      .list-group-item {
+        background-color: transparent;
+        border-color: #e0e0e0;
+      }
+      .effect-type {
+        font-size: 18px;
+        font-weight: 500;
       }
     </style>
   </head>
   <body>
     <!-- prettier-ignore -->
     <div class="container mt-5">
-      <div class="row justify-content-center">
-        <div class="col-md-10">
-          <div class="card">
-            <div class="card-body">
-              <h2 class="text-center">Drug Interaction Checker</h2>
-              <form method="post" action="">
-                {% csrf_token %}
-                <div class="mb-3">
-                  <label for="drug1" class="form-label">Drug 1:</label>
-                  <input
-                    type="text"
-                    id="drug1"
-                    name="drug1"
-                    class="form-control"
-                    placeholder="Enter first drug"
-                    value="{{ drug1_name }}"
-                    required
-                  />
-                </div>
-                <div class="mb-3">
-                  <label for="drug2" class="form-label">Drug 2:</label>
-                  <input
-                    type="text"
-                    id="drug2"
-                    name="drug2"
-                    class="form-control"
-                    placeholder="Enter second drug"
-                    value="{{ drug2_name }}"
-                    required
-                  />
-                </div>
-                <button type="submit" class="btn btn-primary w-100">
-                  Check Interaction
-                </button>
-              </form>
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-body p-5">
+                        <h2 class="text-center mb-4">Drug Interaction Checker</h2>
 
-              {% if interaction %}
-              <div class="mt-4">
-                <h5>Interaction Results:</h5>
-                <p><strong>Interaction:</strong> {{ interaction }}</p>
-                {% if interaction_type %}
-                <p><strong>Interaction Type(s):</strong></p>
-                <ul>
-                  {% for type in interaction_type %}
-                  <li>{{ type }}</li>
-                  {% endfor %}
-                </ul>
-                {% endif %}
-              </div>
-              {% endif %} {% if drug_details %}
-              <div class="row mt-4">
-                {% for drug in drug_details %}
-                <div class="col-md-6">
-                  <div class="drug-details">
-                    <div class="drug-header">{{ drug.user_name }}</div>
-                    <p>
-                      <strong>Generic Name:</strong> {{ drug.generic_name }}
-                    </p>
-                    <p>
-                      <strong>Active Ingredients:</strong>
-                      {{ drug.active_ingredients }}
-                    </p>
-                    <p><strong>Dosage Form:</strong> {{ drug.dosage_form }}</p>
-                    <p>
-                      <strong>Product Type:</strong> {{ drug.product_type }}
-                    </p>
-                    <p><strong>Route:</strong> {{ drug.route }}</p>
-                  </div>
-                </div>
-                {% endfor %}
-              </div>
-              {% endif %} {% if drug_info_details %}
-              <div class="row mt-4">
-                <div class="col-md-6">
-                  <div class="drug-details">
-                    <div class="drug-header">Drug 1: {{ drug_info_details.drug1.name }}</div>
-                    <p><strong>Description:</strong> {{ drug_info_details.drug1.info.description }}</p>
-                    <h6>Side Effects:</h6>
-                    <ul>
-                      {% for effect in drug_info_details.drug1.info.side_effects %}
-                      <li>
-                        <strong>{{ effect.title }}</strong>:
-                        {% if effect.details %}
-                        {{ effect.details|join:", " }}
-                        {% else %}
-                        No details available
+                        <!-- Input Form -->
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="drug1" class="form-label">Drug 1:</label>
+                                <input type="text" id="drug1" name="drug1" class="form-control" placeholder="Enter Drug 1" required />
+                            </div>
+                            <div class="mb-3">
+                                <label for="drug2" class="form-label">Drug 2:</label>
+                                <input type="text" id="drug2" name="drug2" class="form-control" placeholder="Enter Drug 2" required />
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 py-2">Check Interaction</button>
+                        </form>
+
+                        <!-- Interaction Results -->
+                        {% if interaction %}
+                        <div class="mt-4 alert alert-info">
+                            <h5>Interaction Results:</h5>
+                            <p>
+                                <strong>Interaction:</strong>
+                                {% if interaction == "Yes" %}
+                                There is a possible interaction between the given drugs.
+                                {% else %}
+                                There is no interaction between the two given drugs.
+                                {% endif %}
+                            </p>
+                            {% if interaction_type %}
+                            <p><strong>Interaction Type(s):</strong></p>
+                            <ul class="list-group">
+                                {% for type in interaction_type %}
+                                <li class="list-group-item">{{ type }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
                         {% endif %}
-                      </li>
-                      {% endfor %}
-                    </ul>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="drug-details">
-                    <div class="drug-header">Drug 2: {{ drug_info_details.drug2.name }}</div>
-                    <p><strong>Description:</strong> {{ drug_info_details.drug2.info.description }}</p>
-                    <h6>Side Effects:</h6>
-                    <ul>
-                      {% for effect in drug_info_details.drug2.info.side_effects %}
-                      <li>
-                        <strong>{{ effect.title }}</strong>:
-                        {% if effect.details %}
-                        {{ effect.details|join:", " }}
-                        {% else %}
-                        No details available
+
+                        <!-- Drug Details -->
+                        {% if drug_details %}
+                        <div class="row mt-4">
+                            {% for drug in drug_details %}
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header text-center">
+                                        {{ drug.name }}
+                                    </div>
+                                    <div class="card-body">
+                                        <p>
+                                          {{ drug.info.description }}
+                                        </p>
+                                        <p><strong>Generic Name:</strong> {{ drug.generic_name }}</p>
+                                        <p><strong>Active Ingredients:</strong> {{ drug.active_ingredients }}</p>
+                                        <p><strong>Dosage Form:</strong> {{ drug.dosage_form }}</p>
+                                        <p><strong>Product Type:</strong> {{ drug.product_type }}</p>
+                                        <p><strong>Route:</strong> {{ drug.route }}</p>
+
+                                        <div class="side-effects-section">
+                                            <h6 class="text-danger" style="font-size: 20px;"><strong>Side Effects</strong></h6>
+                                            <p class="text-muted">
+                                              Along with its needed effects, this medication may cause some unwanted effects.<strong><mark>Check with your doctor immediately</mark></strong> if any of these side effects occur.
+                                            </p>
+                                            {% if drug.info.side_effects %}
+                                            {% for effect in drug.info.side_effects %}
+                                            <p class="mt-4 mb-0" style="font-size: 16px; font-weight: 500;"><strong>{{ effect.title }}</strong></p>
+                                            <ul class="list-group list-group-flush">
+                                                {% for detail in effect.details %}
+                                                <li class="list-group-item">{{ detail }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                            {% endfor %}
+                                            {% else %}
+                                            <p>No side effects listed.</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
                         {% endif %}
-                      </li>
-                      {% endfor %}
-                    </ul>
-                  </div>
+                    </div>
                 </div>
-              </div>
-              {% endif %}
             </div>
-          </div>
         </div>
-      </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   </body>
